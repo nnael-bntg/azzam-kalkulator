@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multi Kalkulator & KTP Input</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f0f4f7;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 950px;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            border-radius: 12px;
+            margin-top: 30px;
+        }
+
+        .container h1 {
+            text-align: center;
+            color: #333;
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        .input-field {
+            margin-bottom: 15px;
+        }
+
+        .input-field label {
+            font-weight: bold;
+            font-size: 14px;
+            margin-bottom: 8px;
+            color: #555;
+        }
+
+        .input-field input,
+        .input-field select,
+        .input-field button {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            box-sizing: border-box;
+            font-size: 14px;
+        }
+
+        .input-field button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.3s ease;
+        }
+
+        .input-field button:hover {
+            background-color: #0056b3;
+        }
+
+        .ktp-preview {
+            display: none;
+            margin-top: 30px;
+            background: url('https://upload.wikimedia.org/wikipedia/commons/e/e0/Indonesia_KTP_example.png') no-repeat center;
+            background-size: cover;
+            padding: 30px;
+            border-radius: 12px;
+            width: 100%;
+            max-width: 350px;
+            color: #fff;
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+            position: relative;
+            font-size: 12px;
+        }
+
+        .ktp-preview h2 {
+            position: absolute;
+            top: 15px;
+            left: 20px;
+            font-size: 18px;
+            color: #000;
+            margin: 0;
+        }
+
+        .ktp-info {
+            position: relative;
+            margin-top: 45px;
+        }
+
+        .ktp-info p {
+            margin: 5px 0;
+            display: flex;
+            justify-content: space-between;
+            font-size: 14px;
+        }
+
+        .ktp-info strong {
+            color: #007bff;
+        }
+
+        .result {
+            margin-top: 20px;
+            background-color: #f9f9f9;
+            padding: 12px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            color: #333;
+            font-size: 14px;
+        }
+
+        .calculator {
+            background-color: #fff;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+            width: 100%;
+            max-width: 350px;
+            margin-top: 30px;
+        }
+
+        .calculator input {
+            width: calc(100% - 32px);
+            margin: 10px 5px;
+            text-align: right;
+        }
+
+        .calculator button {
+            background-color: #007bff;
+            color: white;
+            font-size: 18px;
+            margin: 5px;
+            width: 60px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .calculator button:hover {
+            background-color: #0056b3;
+        }
+
+        .calculator button:active {
+            background-color: #003d7a;
+        }
+
+        .calculator button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+
+        .flex-row {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+
+            .ktp-preview {
+                width: 100%;
+                max-width: 95%;
+                padding: 20px;
+            }
+
+            .calculator {
+                max-width: 100%;
+            }
+
+            .flex-row {
+                flex-direction: column;
+                gap: 10px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <h1>Multi Kalkulator & KTP Input</h1>
+
+        <!-- Kalkulator -->
+        <div class="calculator">
+            <input type="text" id="display" readonly placeholder="0">
+            <div class="flex-row">
+                <button onclick="appendNumber(7)">7</button>
+                <button onclick="appendNumber(8)">8</button>
+                <button onclick="appendNumber(9)">9</button>
+                <button onclick="setOperation('+')">+</button>
+            </div>
+            <div class="flex-row">
+                <button onclick="appendNumber(4)">4</button>
+                <button onclick="appendNumber(5)">5</button>
+                <button onclick="appendNumber(6)">6</button>
+                <button onclick="setOperation('-')">-</button>
+            </div>
+            <div class="flex-row">
+                <button onclick="appendNumber(1)">1</button>
+                <button onclick="appendNumber(2)">2</button>
+                <button onclick="appendNumber(3)">3</button>
+                <button onclick="setOperation('*')">*</button>
+            </div>
+            <div class="flex-row">
+                <button onclick="appendNumber(0)">0</button>
+                <button onclick="clearDisplay()">C</button>
+                <button onclick="calculate()">=</button>
+                <button onclick="setOperation('/')">/</button>
+            </div>
+            <div class="result" id="result">Result: 0</div>
+        </div>
+
+        <!-- Kalkulator Diskon -->
+        <div>
+            <h2>Kalkulator Diskon</h2>
+            <div class="input-field">
+                <label for="hargaAsli">Harga Asli:</label>
+                <input type="number" id="hargaAsli" placeholder="Masukkan harga asli" required>
+            </div>
+
+            <div class="input-field">
+                <label for="persenDiskon">Persen Diskon:</label>
+                <input type="number" id="persenDiskon" placeholder="Masukkan persen diskon" required>
+            </div>
+
+            <div class="input-field">
+                <button onclick="hitungDiskon()">Hitung Diskon</button>
+            </div>
+
+            <div class="result">
+                <p id="hasilDiskon"></p>
+                <p id="hargaSetelahDiskon"></p>
+            </div>
+        </div>
+
+        <!-- Kalkulator Konversi Suhu -->
+        <div>
+            <h2>Kalkulator Konversi Suhu</h2>
+
+            <div class="input-field">
+                <label for="suhuInput">Masukkan Suhu:</label>
+                <input type="number" id="suhuInput" placeholder="Masukkan nilai suhu" required>
+            </div>
+
+            <div class="input-field">
+                <label for="satuanSuhu">Pilih Satuan Suhu:</label>
+                <select id="satuanSuhu">
+                    <option value="celsius">Celsius (°C)</option>
+                    <option value="fahrenheit">Fahrenheit (°F)</option>
+                    <option value="kelvin">Kelvin (K)</option>
+                    <option value="reamur">Reamur (°Re)</option>
+                    <option value="rankine">Rankine (°Ra)</option>
+                </select>
+            </div>
+
+            <div class="input-field">
+                <button onclick="konversiSuhu()">Konversi</button>
+            </div>
+
+            <div class="result">
+                <p id="hasilCelsius"></p>
+                <p id="hasilFahrenheit"></p>
+                <p id="hasilKelvin"></p>
+                <p id="hasilReamur"></p>
+                <p id="hasilRankine"></p>
+            </div>
+        </div>
+
+        <!-- Input KTP -->
+        <div>
+            <h2>Form Input KTP</h2>
+
+            <div class="input-field">
+                <label for="nama">Nama:</label>
+                <input type="text" id="nama" placeholder="Masukkan Nama" required>
+            </div>
+
+            <div class="input-field">
+                <label for="nik">Nomor KTP (NIK):</label>
+                <input type="text" id="nik" placeholder="Masukkan NIK" required>
+            </div>
+
+            <div class="input-field">
+                <label for="alamat">Alamat:</label>
+                <input type="text" id="alamat" placeholder="Masukkan Alamat" required>
+            </div>
+
+            <div class="input-field">
+                <label for="tanggalLahir">Tanggal Lahir:</label>
+                <input type="date" id="tanggalLahir" required>
+            </div>
+
+            <div class="input-field">
+                <button onclick="generateKTP()">Tampilkan KTP</button>
+            </div>
+
+            <div class="ktp-preview" id="ktpPreview">
+                <h2>Preview KTP</h2>
+                <div class="ktp-info">
+                    <p><strong>Nama:</strong> <span id="ktpNama"></span></p>
+                    <p><strong>NIK:</strong> <span id="ktpNIK"></span></p>
+                    <p><strong>Alamat:</strong> <span id="ktpAlamat"></span></p>
+                    <p><strong>Tanggal Lahir:</strong> <span id="ktpTanggalLahir"></span></p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        let currentInput = "";
+        let operation = null;
+        let previousInput = "";
+
+        function appendNumber(number) {
+            currentInput += number;
+            document.getElementById("display").value = currentInput;
+        }
+
+        function setOperation(op) {
+            if (currentInput === "") return;
+            if (previousInput !== "") {
+                calculate();
+            }
+            operation = op;
+            previousInput = currentInput;
+            currentInput = "";
+        }
+
+        function calculate() {
+            let result;
+            const prev = parseFloat(previousInput);
+            const current = parseFloat(currentInput);
+
+            if (isNaN(prev) || isNaN(current)) return;
+
+            switch (operation) {
+                case "+":
+                    result = prev + current;
+                    break;
+                case "-":
+                    result = prev - current;
+                    break;
+                case "*":
+                    result = prev * current;
+                    break;
+                case "/":
+                    if (current === 0) {
+                        alert("Tidak bisa dibagi dengan 0");
+                        return;
+                    }
+                    result = prev / current;
+                    break;
+                default:
+                    return;
+            }
+
+            document.getElementById("result").textContent = "Result: " + result;
+            currentInput = result.toString();
+            previousInput = "";
+            operation = null;
+        }
+
+        function clearDisplay() {
+            currentInput = "";
+            previousInput = "";
+            operation = null;
+            document.getElementById("display").value = "0";
+            document.getElementById("result").textContent = "Result: 0";
+        }
+
+        function konversiSuhu() {
+            var suhuInput = parseFloat(document.getElementById("suhuInput").value);
+            var satuanSuhu = document.getElementById("satuanSuhu").value;
+
+            if (isNaN(suhuInput)) {
+                alert("Masukkan nilai suhu yang valid.");
+                return;
+            }
+
+            var hasilCelsius, hasilFahrenheit, hasilKelvin, hasilReamur, hasilRankine;
+
+            if (satuanSuhu === "celsius") {
+                hasilCelsius = suhuInput;
+                hasilFahrenheit = (suhuInput * 9 / 5) + 32;
+                hasilKelvin = suhuInput + 273.15;
+                hasilReamur = suhuInput * 4 / 5;
+                hasilRankine = (suhuInput + 273.15) * 9 / 5;
+            } else if (satuanSuhu === "fahrenheit") {
+                hasilCelsius = (suhuInput - 32) * 5 / 9;
+                hasilFahrenheit = suhuInput;
+                hasilKelvin = (suhuInput - 32) * 5 / 9 + 273.15;
+                hasilReamur = (suhuInput - 32) * 4 / 9;
+                hasilRankine = suhuInput + 459.67;
+            } else if (satuanSuhu === "kelvin") {
+                hasilCelsius = suhuInput - 273.15;
+                hasilFahrenheit = (suhuInput - 273.15) * 9 / 5 + 32;
+                hasilKelvin = suhuInput;
+                hasilReamur = (suhuInput - 273.15) * 4 / 5;
+                hasilRankine = suhuInput * 9 / 5;
+            } else if (satuanSuhu === "reamur") {
+                hasilCelsius = suhuInput * 5 / 4;
+                hasilFahrenheit = (suhuInput * 9 / 4) + 32;
+                hasilKelvin = (suhuInput * 5 / 4) + 273.15;
+                hasilReamur = suhuInput;
+                hasilRankine = (suhuInput * 9 / 4) + 491.67;
+            } else if (satuanSuhu === "rankine") {
+                hasilCelsius = (suhuInput - 491.67) * 5 / 9;
+                hasilFahrenheit = suhuInput - 459.67;
+                hasilKelvin = suhuInput * 5 / 9;
+                hasilReamur = (suhuInput - 491.67) * 4 / 5;
+                hasilRankine = suhuInput;
+            }
+
+            document.getElementById("hasilCelsius").textContent = "Celsius: " + hasilCelsius.toFixed(2) + "°C";
+            document.getElementById("hasilFahrenheit").textContent = "Fahrenheit: " + hasilFahrenheit.toFixed(2) + "°F";
+            document.getElementById("hasilKelvin").textContent = "Kelvin: " + hasilKelvin.toFixed(2) + "K";
+            document.getElementById("hasilReamur").textContent = "Reamur: " + hasilReamur.toFixed(2) + "°Re";
+            document.getElementById("hasilRankine").textContent = "Rankine: " + hasilRankine.toFixed(2) + "°Ra";
+        }
+
+        function hitungDiskon() {
+            var hargaAsli = parseFloat(document.getElementById("hargaAsli").value);
+            var persenDiskon = parseFloat(document.getElementById("persenDiskon").value);
+
+            if (isNaN(hargaAsli) || isNaN(persenDiskon)) {
+                alert("Masukkan harga dan persen diskon yang valid.");
+                return;
+            }
+
+            var diskon = hargaAsli * (persenDiskon / 100);
+            var hargaSetelahDiskon = hargaAsli - diskon;
+
+            document.getElementById("hasilDiskon").textContent = "Diskon: Rp " + diskon.toFixed(2);
+            document.getElementById("hargaSetelahDiskon").textContent = "Harga Setelah Diskon: Rp " + hargaSetelahDiskon.toFixed(2);
+        }
+
+        function generateKTP() {
+            var nama = document.getElementById("nama").value;
+            var nik = document.getElementById("nik").value;
+            var alamat = document.getElementById("alamat").value;
+            var tanggalLahir = document.getElementById("tanggalLahir").value;
+
+            if (nama === "" || nik === "" || alamat === "" || tanggalLahir === "") {
+                alert("Semua field harus diisi.");
+                return;
+            }
+
+            document.getElementById("ktpNama").textContent = nama;
+            document.getElementById("ktpNIK").textContent = nik;
+            document.getElementById("ktpAlamat").textContent = alamat;
+            document.getElementById("ktpTanggalLahir").textContent = tanggalLahir;
+
+            document.getElementById("ktpPreview").style.display = "block";
+        }
+    </script>
+
+</body>
+
+</html>
